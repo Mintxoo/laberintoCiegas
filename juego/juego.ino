@@ -1,41 +1,50 @@
-#include <FastLED.h>
+/*#include <FastLED.h>
 
 // How many leds in your strip?
 #define NUM_LEDS 11
 
-#define DATA_PIN 3
+#define DATA_PIN 3*/
 
-const float SoundSpeed = 34000.0; // Sound speed constant in cm/s
-const int PIN_TRIGGER = 3;
-const int PIN_ECHO = 2;
-float distance;
- 
-void setup(){
+const float SoundSpeed = 340.0; // Velocidad del sonido en metros por segundo
+const int NUM_SENSORS = 4;
+const int PIN_ECHO[NUM_SENSORS] = {2, 4, 8, 13}; // Pines de los sensores de eco
+const int PIN_TRIGGER[NUM_SENSORS] = {5, 6, 10, 11}; // Pines de los sensores de trigger
+
+float distance[NUM_SENSORS];
+
+void setup() {
   Serial.begin(9600);
-  pinMode(PIN_TRIGGER, OUTPUT);
-  pinMode(PIN_ECHO, INPUT);
+  for (int i = 0; i < NUM_SENSORS; i++) {
+    pinMode(PIN_ECHO[i], INPUT);
+    pinMode(PIN_TRIGGER[i], OUTPUT);
+  }
 }
 
-void loop(){
-  startTrigger();
-  
-  unsigned long time = pulseIn(PIN_ECHO, HIGH);
-  
-  distance = time * 0.000001 * SoundSpeed / 2.0;
-  Serial.print(distance);
-  Serial.print("cm");
-  Serial.println();
+void loop() {
+  for (int i = 0; i < NUM_SENSORS; i++) {
+    measureDistance(i);
+    printer(i + 1, distance[i]);
+    delay(100); // Espera entre mediciones para evitar interferencias
+  }
   delay(1000);
+  Serial.println("");
 }
- 
-void startTrigger(){
-  digitalWrite(PIN_TRIGGER, LOW); //Trigger LOW and wait 2 ms 
+
+void measureDistance(int sensorIndex) {
+  digitalWrite(PIN_TRIGGER[sensorIndex], LOW);
   delayMicroseconds(2);
-  
-  digitalWrite(PIN_TRIGGER, HIGH); //Trigger HIGH and wait 10ms
+  digitalWrite(PIN_TRIGGER[sensorIndex], HIGH);
   delayMicroseconds(10);
-  
-  digitalWrite(PIN_TRIGGER, LOW);  //Trigger starts LOW
+  digitalWrite(PIN_TRIGGER[sensorIndex], LOW);
+  unsigned long duration = pulseIn(PIN_ECHO[sensorIndex], HIGH);
+  distance[sensorIndex] = duration * 0.5 * SoundSpeed / 10000.0; // Convertir a centímetros
+}
+
+void printer(int sensor, float dist) {
+  Serial.print(sensor);
+  Serial.print(": ");
+  Serial.print(dist);
+  Serial.println(" cm");
 }
 
 /*#include <Servo.h>
