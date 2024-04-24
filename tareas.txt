@@ -1,0 +1,5 @@
+- Programar juego del laberinto
+- Programar Arduino con los 4 sensores de distancia, las 2 tiras de leds
+- Hacer las gafas
+- Hacer el video
+- Hacer el poster
