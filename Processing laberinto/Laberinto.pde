@@ -43,6 +43,7 @@ void draw() {
   data = serialPort.readStringUntil('\n'); // Lee una línea de datos
   println(data);
   if (data != null) {
+    println("queee"+data);
     String[] distances = split(data, ',');
     sensorsData[0] = int(distances[0]);
     sensorsData[1] = int(distances[1]);
