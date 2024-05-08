@@ -1,23 +1,26 @@
 // Mostrar laberinto
 int[][] maze = {
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-  {1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1},
-  {1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1},
-  {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-  {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1},
-  {1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1},
-  {1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1},
-  {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0 ,1},
-  {1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 ,1},
-  {1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1 ,1},
-  {1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1 ,1},
-  {1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0 ,1},
-  {1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0 ,1},
-  {1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0 ,1},
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ,1},
+//     0  1  2  3  4  5  6  7  8  9  10 11 12 13 14  j
+/*0 */{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+/*1 */{1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1},
+/*2 */{1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1},
+/*3 */{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+/*4 */{1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1},
+/*5 */{1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+/*6 */{1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1},
+/*7 */{1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0 ,1},
+/*8 */{1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 ,1},
+/*9 */{1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1 ,1},
+/*10*/{1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1 ,1},
+/*11*/{1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0 ,1},
+/*12*/{1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0 ,1},
+/*13*/{1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0 ,1},
+/*14*/{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ,1},
+/*i*/
 };
 
-Coordinates coordinates = new Coordinates(1,1);
+Coordinates coordinatesCat = new Coordinates(1,1);
+Coordinates coordinatesMouse = new Coordinates(3,6);
 int w, h; // Ancho y alto de cada celda
 
 void setup() {
@@ -34,53 +37,104 @@ void draw() {
 
 void keyPressed() {
   Coordinates newCoordinates;
+  /* RATON */
   if (keyCode == UP) {
-    newCoordinates = moveUp(coordinates);
-    if(newCoordinates == coordinates){
-      println("Movimiento invalido: Arriba");
+    newCoordinates = moveUp(coordinatesMouse);
+    if(newCoordinates == coordinatesMouse){
+      println("Movimiento invalido MOUSE: Arriba");
     }
     else{
-      println("Movimiento valido: INICIO (" + coordinates.getX() + "," + coordinates.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
-      coordinates = newCoordinates;
+      println("Movimiento valido MOUSE: INICIO (" + coordinatesMouse.getX() + "," + coordinatesMouse.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesMouse = newCoordinates;
     }
   }
   else if (keyCode == DOWN) {
-    newCoordinates = moveDown(coordinates);
-    if(newCoordinates == coordinates){
-      println("Movimiento invalido: Abajo");
+    newCoordinates = moveDown(coordinatesMouse);
+    if(newCoordinates == coordinatesMouse){
+      println("Movimiento invalido MOUSE: Abajo");
     }
     else{
-      println("Movimiento valido: INICIO (" + coordinates.getX() + "," + coordinates.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
-      coordinates = newCoordinates;
+      println("Movimiento valido MOUSE: INICIO (" + coordinatesMouse.getX() + "," + coordinatesMouse.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesMouse = newCoordinates;
     }
   }
   else if (keyCode == LEFT) {
-    newCoordinates = moveLeft(coordinates);
-    if(newCoordinates == coordinates){
-      println("Movimiento invalido: Izquierda");
+    newCoordinates = moveLeft(coordinatesMouse);
+    if(newCoordinates == coordinatesMouse){
+      println("Movimiento invalido MOUSE: Izquierda");
     }
     else{
-      println("Movimiento valido: INICIO (" + coordinates.getX() + "," + coordinates.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
-      coordinates = newCoordinates;
+      println("Movimiento valido MOUSE: INICIO (" + coordinatesMouse.getX() + "," + coordinatesMouse.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesMouse = newCoordinates;
     }
   }
   else if (keyCode == RIGHT) {
-    newCoordinates = moveRight(coordinates);
-    if(newCoordinates == coordinates){
-      println("Movimiento invalido: Derecha");
+    newCoordinates = moveRight(coordinatesMouse);
+    if(newCoordinates == coordinatesMouse){
+      println("Movimiento invalido MOUSE: Derecha");
     }
     else{
-      println("Movimiento valido: INICIO (" + coordinates.getX() + "," + coordinates.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
-      coordinates = newCoordinates;
+      println("Movimiento valido MOUSE: INICIO (" + coordinatesMouse.getX() + "," + coordinatesMouse.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesMouse = newCoordinates;
     }
   }
-  drawMaze();
-  if(esFinal(maze, coordinates)){
-    println("--------------------------------------");
-    println("VICTORIA: Has completado el laberinto.");
-    println("--------------------------------------");
+  
+  /* GATO */
+  if (key == 'w') {
+    newCoordinates = moveUp(coordinatesCat);
+    if(newCoordinates == coordinatesCat){
+      println("Movimiento invalido CAT: Arriba");
+    }
+    else{
+      println("Movimiento valido CAT: INICIO (" + coordinatesCat.getX() + "," + coordinatesCat.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesCat = newCoordinates;
+    }
+  }
+  else if (key == 's') {
+    newCoordinates = moveDown(coordinatesCat);
+    if(newCoordinates == coordinatesCat){
+      println("Movimiento invalido CAT: Abajo");
+    }
+    else{
+      println("Movimiento valido CAT: INICIO (" + coordinatesCat.getX() + "," + coordinatesCat.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesCat = newCoordinates;
+    }
+  }
+  else if (key == 'a') {
+    newCoordinates = moveLeft(coordinatesCat);
+    if(newCoordinates == coordinatesCat){
+      println("Movimiento invalido CAT: Izquierda");
+    }
+    else{
+      println("Movimiento valido CAT: INICIO (" + coordinatesCat.getX() + "," + coordinatesCat.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesCat = newCoordinates;
+    }
+  }
+  else if (key == 'd') {
+    newCoordinates = moveRight(coordinatesCat);
+    if(newCoordinates == coordinatesCat){
+      println("Movimiento invalido CAT: Derecha");
+    }
+    else{
+      println("Movimiento valido CAT: INICIO (" + coordinatesCat.getX() + "," + coordinatesCat.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesCat = newCoordinates;
+    }
+  }
+  // Compruebo si el juego ha acabado
+  if(isFinalMouse(maze, coordinatesMouse)){
+    println("--------------------------------------------");
+    println("MOUSE VICTORIA: Has completado el laberinto.");
+    println("--------------------------------------------");
     exit();
   }
+  if(isFinalCat(coordinatesMouse, coordinatesCat)){
+    println("------------------------------------------");
+    println("CAT VICTORIA: Has completado el laberinto.");
+    println("------------------------------------------");
+    exit();
+  }
+  
+  drawMaze();
 }
 
 // Movimiento
@@ -137,7 +191,10 @@ void drawMaze() {
   
   for (int i = 0; i < maze.length; i++) {
     for (int j = 0; j < maze[0].length; j++) {
-      if (i == coordinates.getX() && j == coordinates.getY()){
+      if (i == coordinatesCat.getX() && j == coordinatesCat.getY()){
+          fill(126,126,126);
+        }
+      else if (i == coordinatesMouse.getX() && j == coordinatesMouse.getY()){
         fill(0,255,0); // Casilla actual verde
       }
       else if (i == 1 && j == 1){
@@ -158,7 +215,11 @@ void drawMaze() {
 }
 
 // Final del juego
-boolean esFinal(int[][] maze, Coordinates coordinates)
+boolean isFinalMouse(int[][] maze, Coordinates coordinatesMouse)
 {
-  return(coordinates.getX() == (maze.length -2) && coordinates.getY() == (maze[0].length -2));
+  return(coordinatesMouse.getX() == (maze.length -2) && coordinatesMouse.getY() == (maze[0].length -2));
+}
+boolean isFinalCat(Coordinates coordinatesMouse, Coordinates coordinatesCat)
+{
+  return(coordinatesCat.getX() == coordinatesMouse.getX() && coordinatesCat.getY() == coordinatesMouse.getY());
 }
