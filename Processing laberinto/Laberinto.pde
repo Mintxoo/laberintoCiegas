@@ -41,19 +41,20 @@ boolean[] ledArray = new boolean[12]; // 6 for every player, values: 0(green),1(
 
 void draw() {
   data = serialPort.readStringUntil('\n'); // Lee una línea de datos
-  println(data);
+  //println(data);
   if (data != null) {
-    println("queee"+data);
+    println("Leido: "+data);
     String[] distances = split(data, ',');
-    sensorsData[0] = int(distances[0]);
-    sensorsData[1] = int(distances[1]);
-    sensorsData[2] = int(distances[2]);
-    sensorsData[3] = int(distances[3]);
- 
-    processMovement();
-    
+    if(distances.length == 4){
+      sensorsData[0] = int(distances[0]);
+      sensorsData[1] = int(distances[1]);
+      sensorsData[2] = int(distances[2]);
+      sensorsData[3] = int(distances[3]);
+   
+      processMovement();
+    }
+   
     changeLeds();
-    serialPort.write(booleanArrayToString(ledArray));
   }
   delay(1000);
 }
@@ -176,24 +177,24 @@ void processMovement() {
 
 void changeLeds(){
   // RATON --> player 1
-  if (maze[coordinatesMouse.getX()-1][coordinatesMouse.getY()] == 0){ // no wall at the left
+  if (maze[coordinatesMouse.getX()][coordinatesMouse.getY()-1] == 0){ // no wall at the left
     ledArray[0] = false;
   }else{
     ledArray[0] = true;
   }
-  if (maze[coordinatesMouse.getX()][coordinatesMouse.getY()-1] == 0){ // no wall at the top
+  if (maze[coordinatesMouse.getX()-1][coordinatesMouse.getY()] == 0){ // no wall at the top
     ledArray[1] = false;
     ledArray[2] = false;
   }else{
     ledArray[1] = true;
     ledArray[2] = true;
   } 
-  if (maze[coordinatesMouse.getX()+1][coordinatesMouse.getY()] == 0){ // no wall at the right
+  if (maze[coordinatesMouse.getX()][coordinatesMouse.getY()+1] == 0){ // no wall at the right
     ledArray[3] = false;
   }else{
     ledArray[3] = true;
   }
-  if (maze[coordinatesMouse.getX()][coordinatesMouse.getY()+1] == 0){ // no wall at the bottom
+  if (maze[coordinatesMouse.getX()+1][coordinatesMouse.getY()] == 0){ // no wall at the bottom
     ledArray[4] = false;
     ledArray[5] = false;
   }else{
@@ -202,24 +203,24 @@ void changeLeds(){
   }  
   
   // GATO --> player 2
-  if (maze[coordinatesCat.getX()-1][coordinatesCat.getY()] == 0){ // no wall at the left
+  if (maze[coordinatesCat.getX()][coordinatesCat.getY()-1] == 0){ // no wall at the left
     ledArray[6] = false;
   }else{
     ledArray[6] = true;
   }
-  if (maze[coordinatesCat.getX()][coordinatesCat.getY()-1] == 0){ // no wall at the top
+  if (maze[coordinatesCat.getX()-1][coordinatesCat.getY()] == 0){ // no wall at the top
     ledArray[7] = false;
     ledArray[8] = false;
   }else{
     ledArray[7] = true;
     ledArray[8] = true;
   } 
-  if (maze[coordinatesCat.getX()+1][coordinatesCat.getY()] == 0){ // no wall at the right
+  if (maze[coordinatesCat.getX()][coordinatesCat.getY()+1] == 0){ // no wall at the right
     ledArray[9] = false;
   }else{
     ledArray[9] = true;
   }
-  if (maze[coordinatesCat.getX()][coordinatesCat.getY()+1] == 0){ // no wall at the bottom
+  if (maze[coordinatesCat.getX()+1][coordinatesCat.getY()] == 0){ // no wall at the bottom
     ledArray[10] = false;
     ledArray[11] = false;
   }else{
@@ -227,6 +228,7 @@ void changeLeds(){
     ledArray[11] = true;
   }
   
+  serialPort.write(booleanArrayToString(ledArray));
 }
 
 // Movimiento
