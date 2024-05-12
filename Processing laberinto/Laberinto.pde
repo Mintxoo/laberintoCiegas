@@ -112,6 +112,22 @@ void processMovement() {
       coordinatesMouse = newCoordinates;
     }
   }
+  
+  // CAMBIAR //
+  // Distancias
+  MazeSolver mazeSolver = new MazeSolver(maze);
+  // Distancia Mouse
+  if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), 13, 13)){
+    println("Distancia mouse salida: " + mazeSolver.distance);
+  }
+  else{println("Error mouse");}
+  
+  // Distancia Cat
+  mazeSolver = new MazeSolver(maze);
+  if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), coordinatesCat.getX(), coordinatesCat.getY())){
+    println("Distancia mouse cat: " + mazeSolver.distance);
+  }
+  else{println("Error cat mouse");}
 
   /* GATO --> player 2 */
   int p2_f = sensorsData[2]; // sensor in front
@@ -156,7 +172,13 @@ void processMovement() {
       coordinatesCat = newCoordinates;
     }
   }
-  
+  // CAMBIAR //
+  // Distancia Cat
+  mazeSolver = new MazeSolver(maze);
+  if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), coordinatesCat.getX(), coordinatesCat.getY())){
+    println("Distancia mouse cat: " + mazeSolver.distance);
+  }
+  else{println("Error cat mouse");}
   
   // Compruebo si el juego ha acabado
   if(isFinalMouse(maze, coordinatesMouse)){
