@@ -37,7 +37,7 @@ void setup() {
 
 int[] sensorsData = new int[4]; // guarda la distancia de los sensores
 String data;
-boolean[] ledArray = new boolean[12]; // 6 for every player, values: 0(green),1(red)
+boolean[] ledArray = new boolean[14]; // 6 for every player, values: 0(green),1(red)
 
 void draw() {
   data = serialPort.readStringUntil('\n'); // Lee una línea de datos
@@ -52,11 +52,12 @@ void draw() {
       sensorsData[3] = int(distances[3]);
    
       processMovement();
+      changeLeds();
     }
    
-    changeLeds();
+    
   }
-  delay(1000);
+  //delay(1000);
 }
 
 String booleanArrayToString(boolean[] array) {
@@ -67,12 +68,15 @@ String booleanArrayToString(boolean[] array) {
   return result;
 }
 
+int distanciaRaton = 100, distanciaGato = 100;
+
 void processMovement() {
   Coordinates newCoordinates;
   /* RATON --> player 1 */
   int p1_f = sensorsData[0]; // sensor in front
   int p1_r = sensorsData[1]; // sensor in right
-  if (35 > p1_f) { // move up
+  
+  if (15 > p1_f) { // move up
     newCoordinates = moveUp(coordinatesMouse);
     if(newCoordinates == coordinatesMouse){
       println("Movimiento invalido MOUSE: Arriba");
@@ -82,7 +86,7 @@ void processMovement() {
       coordinatesMouse = newCoordinates;
     }
   }
-  else if (35 > p1_r) { // move right
+  else if (15 > p1_r) { // move right
     newCoordinates = moveRight(coordinatesMouse);
     if(newCoordinates == coordinatesMouse){
       println("Movimiento invalido MOUSE: Derecha");
@@ -92,7 +96,7 @@ void processMovement() {
       coordinatesMouse = newCoordinates;
     }
   }
-  else if (45 < p1_r) { // move left
+  else if ((45 > p1_r) & (15 < p1_r)) { // move left
     newCoordinates = moveLeft(coordinatesMouse);
     if(newCoordinates == coordinatesMouse){
       println("Movimiento invalido MOUSE: Izquierda");
@@ -102,7 +106,7 @@ void processMovement() {
       coordinatesMouse = newCoordinates;
     }
   }
-  else if (45 < p1_f){ // move down
+  else{ // move down
     newCoordinates = moveDown(coordinatesMouse);
     if(newCoordinates == coordinatesMouse){
       println("Movimiento invalido MOUSE: Abajo");
@@ -118,6 +122,7 @@ void processMovement() {
   MazeSolver mazeSolver = new MazeSolver(maze);
   // Distancia Mouse
   if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), 13, 13)){
+    distanciaRaton = mazeSolver.distance;
     println("Distancia mouse salida: " + mazeSolver.distance);
   }
   else{println("Error mouse");}
@@ -125,6 +130,7 @@ void processMovement() {
   // Distancia Cat
   mazeSolver = new MazeSolver(maze);
   if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), coordinatesCat.getX(), coordinatesCat.getY())){
+    distanciaGato = mazeSolver.distance;
     println("Distancia mouse cat: " + mazeSolver.distance);
   }
   else{println("Error cat mouse");}
@@ -132,7 +138,7 @@ void processMovement() {
   /* GATO --> player 2 */
   int p2_f = sensorsData[2]; // sensor in front
   int p2_r = sensorsData[3]; // sensor in right
-  if (35 > p2_f) { // move up
+  if (15 > p2_f) { // move up
     newCoordinates = moveUp(coordinatesCat);
     if(newCoordinates == coordinatesCat){
       println("Movimiento invalido CAT: Arriba");
@@ -142,7 +148,7 @@ void processMovement() {
       coordinatesCat = newCoordinates;
     }
   }
-  else if (35 > p2_r) { // move right
+  else if (15 > p2_r) { // move right
     newCoordinates = moveRight(coordinatesCat);
     if(newCoordinates == coordinatesCat){
       println("Movimiento invalido CAT: Derecha");
@@ -152,7 +158,7 @@ void processMovement() {
       coordinatesCat = newCoordinates;
     }
   }
-  else if (45 < p2_r) { // move left
+  else if ((45 > p2_r) & (15 < p2_r)) { // move left
     newCoordinates = moveLeft(coordinatesCat);
     if(newCoordinates == coordinatesCat){
       println("Movimiento invalido CAT: Izquierda");
@@ -162,7 +168,7 @@ void processMovement() {
       coordinatesCat = newCoordinates;
     }
   }
-  else if (45 < p2_f){ // move down
+  else { // move down
     newCoordinates = moveDown(coordinatesCat);
     if(newCoordinates == coordinatesCat){
       println("Movimiento invalido CAT: Abajo");
@@ -176,6 +182,7 @@ void processMovement() {
   // Distancia Cat
   mazeSolver = new MazeSolver(maze);
   if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), coordinatesCat.getX(), coordinatesCat.getY())){
+    distanciaGato = mazeSolver.distance;
     println("Distancia mouse cat: " + mazeSolver.distance);
   }
   else{println("Error cat mouse");}
@@ -248,6 +255,17 @@ void changeLeds(){
   }else{
     ledArray[10] = true;
     ledArray[11] = true;
+  }
+  
+  if (distanciaRaton > 15){ // distance raton a salida
+    ledArray[12] = false;
+  }else{
+    ledArray[12] = true;
+  }
+  if (distanciaGato > 15){ // distance gato a raton
+    ledArray[13] = false;
+  }else{
+    ledArray[13] = true;
   }
   
   serialPort.write(booleanArrayToString(ledArray));

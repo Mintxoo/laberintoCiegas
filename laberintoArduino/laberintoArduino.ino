@@ -9,16 +9,16 @@ const int NUM_SENSORS = 4;
 const int PIN_ECHO[NUM_SENSORS] = {2, 4, 8, 13};
 const int PIN_TRIGGER[NUM_SENSORS] = {5, 6, 10, 11};
 
-Adafruit_NeoPixel ledStrip1(NUM_LEDS+2, PIN_NEO_PIXEL_1, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel ledStrip2(NUM_LEDS+2, PIN_NEO_PIXEL_2, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ledStrip1(NUM_LEDS, PIN_NEO_PIXEL_1, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ledStrip2(NUM_LEDS, PIN_NEO_PIXEL_2, NEO_GRB + NEO_KHZ800);
 
-int intensity = 50, r = 0, g = 0, b = 0; // 0-255
+int intensity1 = 50, intensity2 = 50, r = 0, g = 0, b = 0; // 0-255
 float distance[NUM_SENSORS];
-int ledArray[NUM_LEDS*2];
+int ledArray[14];
 
 void setup() {
   ledStrip1.begin();
-  ledStrip1.begin();
+  ledStrip2.begin();
 
   Serial.begin(9600);
   for (int i = 0; i < NUM_SENSORS; i++) {
@@ -26,16 +26,17 @@ void setup() {
     pinMode(PIN_TRIGGER[i], OUTPUT);
   }
 
+
   ledStrip1.clear();
   ledStrip2.clear();
   ledStrip1.show();
-  ledStrip2.clear();
+  ledStrip2.show();
 }
 
 void loop() {
   for (int i = 0; i < NUM_SENSORS; i++) {
       measureDistance(i);
-      delay(100);
+      delay(150);
     }
     printer(distance);
 
@@ -51,20 +52,31 @@ void loop() {
 
   changeLeds();
 
-  delay(600);
+  delay(400);
 }
 
 void changeLeds(){
   ledStrip1.clear();
   ledStrip2.clear();
 
+
+  if(ledArray[12] == 1){
+    intensity1 = 120;
+  }else{
+    intensity1 = 40;
+  }
+  if(ledArray[13] == 1){
+    intensity2 = 120;
+  }else{
+    intensity2 = 40;
+  }
   for (int led = 0; led < NUM_LEDS; led++) {
     //Serial.println(ledArray[led]);
     if(ledArray[led] == 0){
       r = 0;
-      g = intensity;
+      g = intensity1;
     }else{
-      r = intensity;
+      r = intensity1;
       g = 0;
     }
     ledStrip1.setPixelColor(led, ledStrip1.Color(r, g, b));
@@ -72,9 +84,9 @@ void changeLeds(){
   for (int led = 6; led < NUM_LEDS*2; led++) {
     if(ledArray[led] == 0){
       r = 0;
-      g = intensity;
+      g = intensity2;
     }else{
-      r = intensity;
+      r = intensity2;
       g = 0;
     }
     ledStrip2.setPixelColor(led, ledStrip2.Color(r, g, b));
