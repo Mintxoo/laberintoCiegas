@@ -1,7 +1,3 @@
-import processing.serial.*;
-
-Serial serialPort;
-
 // Mostrar laberinto
 int[][] maze = {
 //     0  1  2  3  4  5  6  7  8  9  10 11 12 13 14  j
@@ -29,54 +25,20 @@ int w, h; // Ancho y alto de cada celda
 
 void setup() {
   size(400, 400);
-  serialPort = new Serial(this, "COM8", 9600);
   w = width / maze[0].length;
   h = height / maze[1].length;
   drawMaze();
 }
 
-int[] sensorsData = new int[4]; // guarda la distancia de los sensores
-String data;
-boolean[] ledArray = new boolean[14]; // 6 for every player, values: 0(green),1(red)
-
 void draw() {
-  data = serialPort.readStringUntil('\n'); // Lee una línea de datos
-  //println(data);
-  if (data != null) {
-    println("Leido: "+data);
-    String[] distances = split(data, ',');
-    if(distances.length == 4){
-      sensorsData[0] = int(distances[0]);
-      sensorsData[1] = int(distances[1]);
-      sensorsData[2] = int(distances[2]);
-      sensorsData[3] = int(distances[3]);
-   
-      processMovement();
-      changeLeds();
-    }
-   
-    
-  }
-  //delay(1000);
+  // No necesitamos ningún loop de dibujo en draw(), ya que 
+  // dibujamos el laberinto una sola vez en setup().
 }
 
-String booleanArrayToString(boolean[] array) {
-  String result = "";
-  for (boolean value : array) {
-    result += value ? '1' : '0'; // Convertir true a '1' y false a '0'
-  }
-  return result;
-}
-
-int distanciaRaton = 100, distanciaGato = 100;
-
-void processMovement() {
+void keyPressed() {
   Coordinates newCoordinates;
-  /* RATON --> player 1 */
-  int p1_f = sensorsData[0]; // sensor in front
-  int p1_r = sensorsData[1]; // sensor in right
-  
-  if (15 > p1_f) { // move up
+  /* RATON */
+  if (keyCode == UP) {
     newCoordinates = moveUp(coordinatesMouse);
     if(newCoordinates == coordinatesMouse){
       println("Movimiento invalido MOUSE: Arriba");
@@ -86,27 +48,7 @@ void processMovement() {
       coordinatesMouse = newCoordinates;
     }
   }
-  else if (15 > p1_r) { // move right
-    newCoordinates = moveRight(coordinatesMouse);
-    if(newCoordinates == coordinatesMouse){
-      println("Movimiento invalido MOUSE: Derecha");
-    }
-    else{
-      println("Movimiento valido MOUSE: INICIO (" + coordinatesMouse.getX() + "," + coordinatesMouse.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
-      coordinatesMouse = newCoordinates;
-    }
-  }
-  else if ((45 > p1_r) & (15 < p1_r)) { // move left
-    newCoordinates = moveLeft(coordinatesMouse);
-    if(newCoordinates == coordinatesMouse){
-      println("Movimiento invalido MOUSE: Izquierda");
-    }
-    else{
-      println("Movimiento valido MOUSE: INICIO (" + coordinatesMouse.getX() + "," + coordinatesMouse.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
-      coordinatesMouse = newCoordinates;
-    }
-  }
-  else{ // move down
+  else if (keyCode == DOWN) {
     newCoordinates = moveDown(coordinatesMouse);
     if(newCoordinates == coordinatesMouse){
       println("Movimiento invalido MOUSE: Abajo");
@@ -116,29 +58,29 @@ void processMovement() {
       coordinatesMouse = newCoordinates;
     }
   }
-  
-  // CAMBIAR //
-  // Distancias
-  MazeSolver mazeSolver = new MazeSolver(maze);
-  // Distancia Mouse
-  if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), 13, 13)){
-    distanciaRaton = mazeSolver.distance;
-    println("Distancia mouse salida: " + mazeSolver.distance);
+  else if (keyCode == LEFT) {
+    newCoordinates = moveLeft(coordinatesMouse);
+    if(newCoordinates == coordinatesMouse){
+      println("Movimiento invalido MOUSE: Izquierda");
+    }
+    else{
+      println("Movimiento valido MOUSE: INICIO (" + coordinatesMouse.getX() + "," + coordinatesMouse.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesMouse = newCoordinates;
+    }
   }
-  else{println("Error mouse");}
-  
-  // Distancia Cat
-  mazeSolver = new MazeSolver(maze);
-  if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), coordinatesCat.getX(), coordinatesCat.getY())){
-    distanciaGato = mazeSolver.distance;
-    println("Distancia mouse cat: " + mazeSolver.distance);
+  else if (keyCode == RIGHT) {
+    newCoordinates = moveRight(coordinatesMouse);
+    if(newCoordinates == coordinatesMouse){
+      println("Movimiento invalido MOUSE: Derecha");
+    }
+    else{
+      println("Movimiento valido MOUSE: INICIO (" + coordinatesMouse.getX() + "," + coordinatesMouse.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesMouse = newCoordinates;
+    }
   }
-  else{println("Error cat mouse");}
-
-  /* GATO --> player 2 */
-  int p2_f = sensorsData[2]; // sensor in front
-  int p2_r = sensorsData[3]; // sensor in right
-  if (15 > p2_f) { // move up
+  
+  /* GATO */
+  if (key == 'w') {
     newCoordinates = moveUp(coordinatesCat);
     if(newCoordinates == coordinatesCat){
       println("Movimiento invalido CAT: Arriba");
@@ -148,27 +90,7 @@ void processMovement() {
       coordinatesCat = newCoordinates;
     }
   }
-  else if (15 > p2_r) { // move right
-    newCoordinates = moveRight(coordinatesCat);
-    if(newCoordinates == coordinatesCat){
-      println("Movimiento invalido CAT: Derecha");
-    }
-    else{
-      println("Movimiento valido CAT: INICIO (" + coordinatesCat.getX() + "," + coordinatesCat.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
-      coordinatesCat = newCoordinates;
-    }
-  }
-  else if ((45 > p2_r) & (15 < p2_r)) { // move left
-    newCoordinates = moveLeft(coordinatesCat);
-    if(newCoordinates == coordinatesCat){
-      println("Movimiento invalido CAT: Izquierda");
-    }
-    else{
-      println("Movimiento valido CAT: INICIO (" + coordinatesCat.getX() + "," + coordinatesCat.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
-      coordinatesCat = newCoordinates;
-    }
-  }
-  else { // move down
+  else if (key == 's') {
     newCoordinates = moveDown(coordinatesCat);
     if(newCoordinates == coordinatesCat){
       println("Movimiento invalido CAT: Abajo");
@@ -178,15 +100,26 @@ void processMovement() {
       coordinatesCat = newCoordinates;
     }
   }
-  // CAMBIAR //
-  // Distancia Cat
-  mazeSolver = new MazeSolver(maze);
-  if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), coordinatesCat.getX(), coordinatesCat.getY())){
-    distanciaGato = mazeSolver.distance;
-    println("Distancia mouse cat: " + mazeSolver.distance);
+  else if (key == 'a') {
+    newCoordinates = moveLeft(coordinatesCat);
+    if(newCoordinates == coordinatesCat){
+      println("Movimiento invalido CAT: Izquierda");
+    }
+    else{
+      println("Movimiento valido CAT: INICIO (" + coordinatesCat.getX() + "," + coordinatesCat.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesCat = newCoordinates;
+    }
   }
-  else{println("Error cat mouse");}
-  
+  else if (key == 'd') {
+    newCoordinates = moveRight(coordinatesCat);
+    if(newCoordinates == coordinatesCat){
+      println("Movimiento invalido CAT: Derecha");
+    }
+    else{
+      println("Movimiento valido CAT: INICIO (" + coordinatesCat.getX() + "," + coordinatesCat.getY() + ") FINAL (" + newCoordinates.getX() + "," + newCoordinates.getY() + ")");
+      coordinatesCat = newCoordinates;
+    }
+  }
   // Compruebo si el juego ha acabado
   if(isFinalMouse(maze, coordinatesMouse)){
     println("--------------------------------------------");
@@ -201,74 +134,22 @@ void processMovement() {
     exit();
   }
   
+  // Distancias
+  MazeSolver mazeSolver = new MazeSolver(maze);
+  // Distancia Mouse
+  if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), 13, 13)){
+    println("Distancia mouse salida: " + mazeSolver.distance);
+  }
+  else{println("Error mouse");}
+  
+  // Distancia Cat
+  mazeSolver = new MazeSolver(maze);
+  if(mazeSolver.resolveMaze(coordinatesMouse.getX(), coordinatesMouse.getY(), coordinatesCat.getX(), coordinatesCat.getY())){
+    println("Distancia mouse cat: " + mazeSolver.distance);
+  }
+  else{println("Error cat mouse");}
+  
   drawMaze();
-}
-
-void changeLeds(){
-  // RATON --> player 1
-  if (maze[coordinatesMouse.getX()][coordinatesMouse.getY()-1] == 0){ // no wall at the left
-    ledArray[0] = false;
-  }else{
-    ledArray[0] = true;
-  }
-  if (maze[coordinatesMouse.getX()-1][coordinatesMouse.getY()] == 0){ // no wall at the top
-    ledArray[1] = false;
-    ledArray[2] = false;
-  }else{
-    ledArray[1] = true;
-    ledArray[2] = true;
-  } 
-  if (maze[coordinatesMouse.getX()][coordinatesMouse.getY()+1] == 0){ // no wall at the right
-    ledArray[3] = false;
-  }else{
-    ledArray[3] = true;
-  }
-  if (maze[coordinatesMouse.getX()+1][coordinatesMouse.getY()] == 0){ // no wall at the bottom
-    ledArray[4] = false;
-    ledArray[5] = false;
-  }else{
-    ledArray[4] = true;
-    ledArray[5] = true;
-  }  
-  
-  // GATO --> player 2
-  if (maze[coordinatesCat.getX()][coordinatesCat.getY()-1] == 0){ // no wall at the left
-    ledArray[6] = false;
-  }else{
-    ledArray[6] = true;
-  }
-  if (maze[coordinatesCat.getX()-1][coordinatesCat.getY()] == 0){ // no wall at the top
-    ledArray[7] = false;
-    ledArray[8] = false;
-  }else{
-    ledArray[7] = true;
-    ledArray[8] = true;
-  } 
-  if (maze[coordinatesCat.getX()][coordinatesCat.getY()+1] == 0){ // no wall at the right
-    ledArray[9] = false;
-  }else{
-    ledArray[9] = true;
-  }
-  if (maze[coordinatesCat.getX()+1][coordinatesCat.getY()] == 0){ // no wall at the bottom
-    ledArray[10] = false;
-    ledArray[11] = false;
-  }else{
-    ledArray[10] = true;
-    ledArray[11] = true;
-  }
-  
-  if (distanciaRaton > 15){ // distance raton a salida
-    ledArray[12] = false;
-  }else{
-    ledArray[12] = true;
-  }
-  if (distanciaGato > 15){ // distance gato a raton
-    ledArray[13] = false;
-  }else{
-    ledArray[13] = true;
-  }
-  
-  serialPort.write(booleanArrayToString(ledArray));
 }
 
 // Movimiento
